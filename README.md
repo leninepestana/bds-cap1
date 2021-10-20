@@ -1192,6 +1192,7 @@ public class ProductResourceTests {
 	}
 }
 ```
+### Testando o `update`
 
 ## Autor
 Lenine Ferrer de Pestana <br />
