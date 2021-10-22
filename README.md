@@ -1192,7 +1192,96 @@ public class ProductResourceTests {
 	}
 }
 ```
-### Testando o `update`
+### Testando o método `update`
+Teste simulado na camada web com comportamento simulado das dependências com o método `update` da classe **ProductResource** 
+
+```java
+@PutMapping(value = "/{id}")
+public ResponseEntity<ProductDTO> update(@PathVariable Long id, @RequestBody ProductDTO dto) {
+	dto = service.update(id, dto);
+	return ResponseEntity.ok().body(dto);
+}
+```
+
+O `update` recebe um **@PathVariable Long id** e um  **@RequestBody ProductDTO dto**, faz também uma chamada ao `update` do **service** e atualiza o objeto retornando um objecto **ProductDTO**
+
+O **service** pode guardar os dados ou lançar umaexceçao, veja-se na classe **ProductService**:
+
+```java
+@Transactional
+public ProductDTO update(Long id, ProductDTO dto) {
+	try {
+		Product entity = repository.getOne(id);
+		copyDtoToEntity(dto, entity);
+		entity = repository.save(entity);
+		return new ProductDTO(entity);
+	}
+	catch (EntityNotFoundException e) {
+		throw new ResourceNotFoundException("Id not found " + id);
+	}		
+}
+```
+Simular o comportamento do **service**, é parecido com o método `findById`, recebe no entanto, mais um parâmetro que é o **ProductDTO**, no entanto utilizamos o `any()` para simular o comportamento de qualquer objecto retornado.
+
+```bash
+@BeforeEach
+void setUp() throws Exception {
+	
+	existingId = 1L;
+	nonExistingId = 2L;
+	
+	productDTO = Factory.createProductDTO();		
+	page = new PageImpl<>(List.of(productDTO));
+	
+	when(service.findAllPaged(any())).thenReturn(page);
+	
+	when(service.findById(existingId)).thenReturn(productDTO);
+	when(service.findById(nonExistingId)).thenThrow(ResourceNotFoundException.class);
+
+	when(service.update(existingId, any())).thenReturn(productDTO);
+	when(service.update(nonExistingId, any())).thenThrow(ResourceNotFoundException.class);
+}
+```
+
+```java
+@Test
+public void updateShouldReturnProductDTOWhenIdExists() throws Exception {
+	
+	String jsonBody = objectMapper.writeValueAsString(productDTO);
+	
+	ResultActions result = 
+			mockMvc.perform(put("/products/{id}", existingId)
+					.content(jsonBody)
+					.contentType(MediaType.APPLICATION_JSON)
+					.accept(MediaType.APPLICATION_JSON));
+	
+	result.andExpect(status().isOk());
+	result.andExpect(jsonPath("$.id").exists());
+	result.andExpect(jsonPath("$.name").exists());
+	result.andExpect(jsonPath("$.description").exists());
+}
+```
+
+> O `put` é uma requisição que tem corpo, ou seja, temos que passar um objeto completo com os seus dados (e.g.: id, name, description), tal como podemos ver no *Postman*, só que esse objeto não é java mas sim um objeto *Json*, logo temos que converter esse objeto de java para *Json* e isso é feito com o **ObjectMapper**.
+O **ProductDTO** deverá ser assim transformado em *String* para o *Json*:
+
+```bash
+String jsonBody = objectMapper.writeValueAsString(productDTO);
+```
+
+Passar o String jsonBody na requisição `.content(jsonBody)`. 
+Precisamos de negociar também o tipo de datos da requisição, não só o da resposta, que é o `accept`, isso é feito com o `.contentType(MediaType.APPLICATION_JSON)`. 
+
+De seguida basta fazermos as nossas Assertions:
+
+```bash
+result.andExpect(status().isOk());
+result.andExpect(jsonPath("$.id").exists());
+result.andExpect(jsonPath("$.name").exists());
+result.andExpect(jsonPath("$.description").exists());
+```
+
+Se corrermos o teste, vai falhar em todos os testes por causa do ArgumentMatchers. Quando utilizamos o argumento `any()` os outros argumentos não podem ser argumentos simples:
 
 ## Autor
 Lenine Ferrer de Pestana <br />
