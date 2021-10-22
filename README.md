@@ -1283,6 +1283,15 @@ result.andExpect(jsonPath("$.description").exists());
 
 Se corrermos o teste, vai falhar em todos os testes por causa do ArgumentMatchers. Quando utilizamos o argumento `any()` os outros argumentos não podem ser argumentos simples:
 
+![argument_matchers](https://user-images.githubusercontent.com/22635013/138419127-13ee8d45-4a75-4f35-b612-7b21eafb9aac.JPG)
+
+Temos que usar o método `eq()`: 
+```java
+when(service.update(eq(existingId), any())).thenReturn(productDTO);
+when(service.update(eq(nonExistingId), any())).thenThrow(ResourceNotFoundException.class);
+```
+![argument_eq](https://user-images.githubusercontent.com/22635013/138419969-a63e7725-e8e4-4c11-b7eb-9d37bedd2a7a.JPG)
+
 ## Autor
 Lenine Ferrer de Pestana <br />
 Email: leninepestana@gmail.com
