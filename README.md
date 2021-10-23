@@ -1841,7 +1841,7 @@ doNothing().when(service).delete(existingId);
 doThrow(ResourceNotFoundException.class).when(service).delete(nonExistingId);
 doThrow(DatabaseException.class).when(service).delete(dependentId);
 ```
-💡 Vamos agora simular o `delete()` para um **id** existente:
+🔴 Vamos agora simular o `delete()` para um **id** existente. Já temos os très cenários implementados do método `delete()` no *Mock*:
 
 ```java
 doNothing().when(service).delete(existingId);
