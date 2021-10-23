@@ -1627,7 +1627,7 @@ Iremos fazer o método simulado no *mock*:
 ```java
 when(service.insert(any())).thenReturn(productDTO);
 ```
-Implementação do teste, aqui chamamos o *post* em vez do *put*:
+🧾 Implementação do teste, aqui chamamos o *post* em vez do *put*:
 ```java
 @Test
 public void insertShouldReturnProductDTOCreated() throws Exception {
@@ -1645,7 +1645,7 @@ public void insertShouldReturnProductDTOCreated() throws Exception {
 			result.andExpect(jsonPath("$.description").exists());
 }
 ``` 
-Aspecto da classe **ProductResourceTests** no final da implementação do `insert()`, mais concretamente o `insertShouldReturnProductDTOCreated()`:
+🧾 Aspecto da classe **ProductResourceTests** no final da implementação do `insert()`, mais concretamente o `insertShouldReturnProductDTOCreated()`:
 
 ```java
 package com.devsuperior.dscatalog.resources;
@@ -1805,8 +1805,74 @@ public class ProductResourceTests {
 	}
 }
 ```
+- `delete` deveria 
+	- retornar “no content” (código 204) quando o id existir
+	- retornar “not found” (código 404) quando o id não existir
 
-## Autor
+📙   O `delete()`da class **ProductResource** também chama o `delete()`do **service** logo temos que *mockar* o comportamento do **service**.
+
+Classe **ProductResource**: 
+```java
+@DeleteMapping(value = "/{id}")
+public ResponseEntity<Void> delete(@PathVariable Long id) {
+	service.delete(id);
+	return ResponseEntity.noContent().build();
+}
+```
+Classe **ProductService**:
+
+```java
+public void delete(Long id) {
+	try {
+		repository.deleteById(id);
+	}
+	catch (EmptyResultDataAccessException e) {
+		throw new ResourceNotFoundException("Id not found " + id);
+	}
+	catch (DataIntegrityViolationException e) {
+		throw new DatabaseException("Integrity violation");
+	}
+}
+```
+Na classe **ProductResourceTest** já temos os três cenários do `delete()` no *mock*:
+
+```java
+doNothing().when(service).delete(existingId);
+doThrow(ResourceNotFoundException.class).when(service).delete(nonExistingId);
+doThrow(DatabaseException.class).when(service).delete(dependentId);
+```
+💡 Vamos agora simular o `delete()` para um **id** existente:
+
+```java
+doNothing().when(service).delete(existingId);
+doThrow(ResourceNotFoundException.class).when(service).delete(nonExistingId);
+doThrow(DatabaseException.class).when(service).delete(dependentId);
+```
+💡 Implementação do `delete()` para um **id** existente:
+
+```java
+@Test
+public void deleteShouldReturnNoContentWhenIdExist() throws Exception {				
+	ResultActions result = 
+			mockMvc.perform(delete("/products/{id}", existingId)
+					.accept(MediaType.APPLICATION_JSON));
+	
+	result.andExpect(status().isNoContent());
+}
+```
+💡 Implementação do `delete()` para um **id** não existente é bastante semelhante:
+
+```java
+@Test
+public void deleteShouldReturnNotFoundWhenIdDoesNotExist() throws Exception {
+	ResultActions result = 
+			mockMvc.perform(delete("/products/{id}", nonExistingId)
+					.accept(MediaType.APPLICATION_JSON));
+	
+	result.andExpect(status().isNotFound());
+}
+```
+## 🤓  Autor
 Lenine Ferrer de Pestana <br />
 Email: leninepestana@gmail.com
 
