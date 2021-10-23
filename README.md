@@ -1422,6 +1422,9 @@ public class ProductResourceTests {
 	}
 }
 ```
+### Simulando outros comportamentos com do **ProductService**
+
+
 
 ## Autor
 Lenine Ferrer de Pestana <br />
