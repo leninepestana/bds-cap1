@@ -2053,9 +2053,45 @@ public class ProductResourceTests {
 ```
 <h2>🧾 Os nossos primeiros testes de integração</h2>
 <h3>Teste de integração do <code>ProductService</code> com o <code>ProductRepository</code></h3>
-<p>Fazemos uma chamada de um método no <strong>service</strong> e o mesmo irá descer ao <strong>repository</strong></p>
+<p>Fazemos uma chamada de um método no <strong>service</strong> e o mesmo irá descer ao <strong>repository</strong> até chegar á <strong>BD</strong>.</p>
 
-## 🤓  Autor
+<p>Criação de uma classe <code>ProductServiceIT</code>
+
+```java
+package com.devsuperior.dscatalog.services;
+
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+public class ProductServiceIT {
+	
+}
+```
+<p>Teste para verificar se o <code>delete()</code> com um <strong>existingId</strong> realmente apaga um objecto da BD:</p>
+
+```java
+@Test
+public void deleteShouldDeleteResourceWhenIdExists() {
+	
+	service.delete(existingId);
+	
+	Assertions.assertEquals(countTotalProducts - 1, repository.count());
+}
+```
+<p>Apagamos um registo na <strong>BD</strong> através do service:</p>
+
+<code>service.delete(existingId);</code>
+
+<p>Fazemos o <i>Assertions</i>, para isso usamos o método  <code>countTotalProducts</code> e o acedemos ao <code>repository.count()</code>:
+
+<code>Assertions.assertEquals(countTotalProducts - 1, repository.count());</code>
+
+<p>Teste para verificar se o <code>delete()</code> com um <strong>nonExistingId</strong> retorna uma excepção:</p>
+
+
+<hr></hr>
+
+<h3>✍ Autor</h3>
 Lenine Ferrer de Pestana <br />
 Email: leninepestana@gmail.com
 
