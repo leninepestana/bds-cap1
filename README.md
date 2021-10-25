@@ -597,11 +597,11 @@ public class ProductServiceTests {
 > Neste caso, no atual sistema que montamos, não existiria problemas ao apagar um produto. Os produtos são entidades independentes. A entidade das categorias é que não podem ser independentes. Podemos apagar produtos sem problema algum, não poderíamos é apagar categorias com produtos associados.<br />
 No atual sistema montado fica já preparado para que num futuro, caso seja implementada uma classe de pedidos associados a um produto, essa validação já estaria feita. Não seria nesse caso, possível apagar um produto com pedidos associados a ele.
 
-## Simulando comportamentos diversos com Mockito
+<h2>Simulando comportamentos diversos com Mockito</h2>
 
 Simulação para outros métodos do `repository`, classe **ProductRepository**, simulando o comportamento do **ProductRepository**.
 
-### Simulação do comportamento do método `findAll(pageable)`
+<h3>Simulação do comportamento do método <code>findAll(pageable)</code></h3>
 
 O `findAll(pageable)` retorna uma um objecto do tipo `Page<Product>`. O objecto *Mockado* tem que retornar também um *pageable*
 
@@ -2051,6 +2051,10 @@ public class ProductResourceTests {
 }
 
 ```
+<h2>🧾 Os nossos primeiros testes de integração</h2>
+<h3>Teste de integração do <code>ProductService</code> com o <code>ProductRepository</code></h3>
+<p>Fazemos uma chamada de um método no <strong>service</strong> e o mesmo irá descer ao <strong>repository</strong></p>
+
 ## 🤓  Autor
 Lenine Ferrer de Pestana <br />
 Email: leninepestana@gmail.com
