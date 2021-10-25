@@ -2052,7 +2052,11 @@ public class ProductResourceTests {
 
 ```
 <h2>🧾 Os nossos primeiros testes de integração</h2>
-<h3>Teste de integração do <code>ProductService</code> com o <code>ProductRepository</code></h3>
+
+<h3>Teste de integração com o método <code>delete()</code>:</h3>
+
+<p>Na verdade esse tipo de teste implica a integração do <code>ProductService</code> com o <code>ProductRepository</code>.</p>
+
 <p>Fazemos uma chamada de um método no <strong>service</strong> e o mesmo irá descer ao <strong>repository</strong> até chegar á <strong>BD</strong>.</p>
 
 <p>Criação de uma classe <code>ProductServiceIT</code>
@@ -2098,7 +2102,7 @@ public void deleteShouldThrowResourceNotFoundExceptionWhenIdWhenIdDoesNotExists(
 	
 }
 ```
-
+<h3>Teste de integração com o método <code>findAllPaged()</code>:</h3>
 
 <hr></hr>
 
