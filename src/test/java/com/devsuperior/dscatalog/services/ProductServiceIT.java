@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.devsuperior.dscatalog.repositories.ProductRepository;
+import com.devsuperior.dscatalog.services.exceptions.ResourceNotFoundException;
 
 @SpringBootTest
 public class ProductServiceIT {
@@ -36,4 +37,15 @@ public class ProductServiceIT {
 		
 		Assertions.assertEquals(countTotalProducts - 1, repository.count());
 	}
+
+	@Test
+	public void deleteShouldThrowResourceNotFoundExceptionWhenIdWhenIdDoesNotExists() {
+		
+		Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+			service.delete(nonExistingId);
+		});
+		
+	}
+	
+	
 }

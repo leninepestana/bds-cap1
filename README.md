@@ -2088,6 +2088,17 @@ public void deleteShouldDeleteResourceWhenIdExists() {
 
 <p>Teste para verificar se o <code>delete()</code> com um <strong>nonExistingId</strong> retorna uma excepção:</p>
 
+```java
+@Test
+public void deleteShouldThrowResourceNotFoundExceptionWhenIdWhenIdDoesNotExists() {
+	
+	Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+		service.delete(nonExistingId);
+	});
+	
+}
+```
+
 
 <hr></hr>
 
