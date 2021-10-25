@@ -2104,6 +2104,69 @@ public void deleteShouldThrowResourceNotFoundExceptionWhenIdWhenIdDoesNotExists(
 ```
 <h3>Teste de integração com o método <code>findAllPaged()</code>:</h3>
 
+```java
+@Test
+public void findAllPageShouldReturnPageWhenPage0Size10() {
+	
+	PageRequest pageRequest = PageRequest.of(0, 10);
+			
+	Page<ProductDTO> result = service.findAllPaged(pageRequest);
+	
+	// Verificar se a página ñ está vazia
+	Assertions.assertFalse(result.isEmpty());
+	// Testar se é a página 0
+	Assertions.assertEquals(0, result.getNumber());
+	// Testar se a página tem 10 elementos
+	Assertions.assertEquals(10, result.getSize());
+	// Testar o total de valores na BD
+	Assertions.assertEquals(countTotalProducts, result.getTotalElements());		
+}
+```
+<blockquote>
+Para que este teste passe, é fundamental acrescentar a Notation @Transational logo no ínicio, antes da declaração da classe. Tendo em conta que o método <code>delete()</code> irá apagar um objecto da <strong>BD</strong>, quando formos correr o 2º teste, este não irá encontrar os 25 registos (um será sempre apagado com o delete) e irá dar erro. O @Transational dá um loadback na <strong>BD</strong>.
+</blockquote>
+
+```java
+@SpringBootTest
+@Transactional
+public class ProductServiceIT {
+(...)
+```
+
+<h3>Testar se uma página não existe</h3>
+
+```java
+@Test
+public void findAllPageShouldReturnEmptyPageWhenPageDoesNotExist() {
+	
+	// Teste à pagina 50
+	PageRequest pageRequest = PageRequest.of(50, 10);
+			
+	Page<ProductDTO> result = service.findAllPaged(pageRequest);
+	
+	// Tem que ser verdadeiro que o resultado é vazio
+	Assertions.assertTrue(result.isEmpty());		
+}
+```
+<h3>Teste se os dados estão ordenados quando são pesquisados de forma ordenada numa página</h3>
+
+```java
+@Test
+public void findAllPageShouldReturnSortedPageWhenSortedByName() {
+	
+	PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("name"));
+			
+	Page<ProductDTO> result = service.findAllPaged(pageRequest);
+	
+	// Tem que ser verdadeiro que o resultado é vazio
+	Assertions.assertFalse(result.isEmpty());
+	Assertions.assertEquals("Macbook Pro", result.getContent().get(0).getName());
+	Assertions.assertEquals("PC Gamer", result.getContent().get(1).getName());
+	Assertions.assertEquals("PC Gamer Alfa", result.getContent().get(2).getName());
+}
+```
+
+
 <hr></hr>
 
 <h3>✍ Autor</h3>
