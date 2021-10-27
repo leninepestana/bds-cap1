@@ -2338,7 +2338,58 @@ public class ProductResourceIT {
 	}
 }
 ```
-<h3>Teste de integração com método <code>update()</code></h3>
+<h3>Teste de integração com método <code>update()</code> quando o <strong>id</strong> existe</h3>
+
+<p>Na classe <code>ProductResourceTests</code> o método <code>updateShouldReturnProductDTOWhenIdExists()</code> só testa se existe um <strong>id</strong> um <strong>name</strong> e uma <strong>description</strong>.</p>
+
+<h4>Classe <code>ProductResourceTests</code> com teste de unidade:</h4>
+
+```java
+@Test
+public void updateShouldReturnProductDTOWhenIdExists() throws Exception {
+	
+	String jsonBody = objectMapper.writeValueAsString(productDTO);
+	
+	ResultActions result = 
+			mockMvc.perform(put("/products/{id}", existingId)
+					.content(jsonBody)
+					.contentType(MediaType.APPLICATION_JSON)
+					.accept(MediaType.APPLICATION_JSON));
+	
+	result.andExpect(status().isOk());
+	result.andExpect(jsonPath("$.id").exists());
+	result.andExpect(jsonPath("$.name").exists());
+	result.andExpect(jsonPath("$.description").exists());
+}
+```
+<p>Com o teste de <strong>Integration</strong>, o valor passado ao <code>productDTO</code> irá mesmo ser atualizado.</p>
+<h4>O teste pode assim ser feito com valores reais:</h4>
+
+```java
+@Test
+public void updateShouldReturnProductDTOWhenIdExists() throws Exception {
+	
+	ProductDTO productDTO = Factory.createProductDTO();
+	
+	String jsonBody = objectMapper.writeValueAsString(productDTO);
+	String expectedName = productDTO.getName();
+	String expectedDescription = productDTO.getDescription();
+	
+	ResultActions result = 
+			mockMvc.perform(put("/products/{id}", existingId)
+					.content(jsonBody)
+					.contentType(MediaType.APPLICATION_JSON)
+					.accept(MediaType.APPLICATION_JSON));
+	
+	result.andExpect(status().isOk());
+	result.andExpect(jsonPath("$.id").value(existingId));
+	result.andExpect(jsonPath("$.name").value(expectedName));
+	result.andExpect(jsonPath("$.description").value(expectedDescription));
+}
+```
+
+
+
 
 <hr></hr>
 
