@@ -2388,7 +2388,27 @@ public void updateShouldReturnProductDTOWhenIdExists() throws Exception {
 }
 ```
 
+<h3>Teste de integração com método <code>update()</code> quando o <strong>id</strong> não existe</h3>
 
+<p>Este método é muito semelhante ao anterior, mas deve retornar not found</p>
+
+```java
+@Test
+public void updateShouldReturnNotFoundWhenIdDoesNotExists() throws Exception {
+	
+	ProductDTO productDTO = Factory.createProductDTO();
+	
+	String jsonBody = objectMapper.writeValueAsString(productDTO);
+	
+	ResultActions result = 
+			mockMvc.perform(put("/products/{id}", nonExistingId)
+					.content(jsonBody)
+					.contentType(MediaType.APPLICATION_JSON)
+					.accept(MediaType.APPLICATION_JSON));
+	
+	result.andExpect(status().isNotFound());
+}
+```
 
 
 <hr></hr>
