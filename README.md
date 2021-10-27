@@ -1380,6 +1380,15 @@ public class ProductResourceTests {
 	@Test
 	public void updateShouldReturnNotFoundWhenIdDoesNotExists() throws Exception {
 		
+		String jsonBody = objectMapper.writeValueAsString(productDTO);
+		
+		ResultActions result = 
+				mockMvc.perform(put("/products/{id}", nonExistingId)
+						.content(jsonBody)
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON));
+		
+		result.andExpect(status().isNotFound());		
 	}
 	
 	@Test
@@ -2329,7 +2338,7 @@ public class ProductResourceIT {
 	}
 }
 ```
-
+<h3>Teste de integração com método <code>update()</code></h3>
 
 <hr></hr>
 
