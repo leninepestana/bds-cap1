@@ -2409,8 +2409,18 @@ public void updateShouldReturnNotFoundWhenIdDoesNotExists() throws Exception {
 	result.andExpect(status().isNotFound());
 }
 ```
+<h2>02-40 Apresentando o desafio TDD resolvido</h2>
 
+<h4>📂C:\ws-bootcamp\02-40.Apresentando.o.desafio.TDD.resolvido</h4>
+<p>Importar os seguintes projectos para o STS:</p>
+<ul>
+	<li>bds01</li>
+	<li>dscatalog</li>
+</ul>
 
+<p>
+<a href="https://github.com/leninepestana/desafio-tdd-resolvido">Desafio TDD resolvido</a>
+</p>
 <hr></hr>
 
 <h3>Autor</h3>
